@@ -130,16 +130,41 @@ cv::Mat ColorDetector::process(const cv::Mat& image){
 }
 
 int main(){
+    cv::Mat frame;
+    cv::VideoCapture cap;
+    int deviceID = 0;
+    int apiID = cv::CAP_ANY;
 
-    ColorDetector colordetector(160, 250, 250,       /// color
-                                100);       /// thresholddd call
-    cv::Mat image = cv::imread("1.jpg");
-      cv::resize(image, image, cv::Size(499, 399));
-    cv::Mat result = colordetector(image);
-    
-    cv::imshow("colorDetectoin", result);
-    cv::imshow("coloredImage", image);
-    
-    cv::waitKey();                     /// press any key to exit.
-    return 0;
-}
+    cap.open(deviceID, apiID);
+    if(!cap.isOpened()){
+
+        std::cerr << "Oops, Unable to open camera" << std::endl;
+        return -1;
+    }
+    std::cout << "Start program"<< std::endl
+              << "Press any key to quit!." << std::endl;
+
+    while(true){
+        
+        cap.read(frame);
+        if(frame.empty()){
+            continue;
+        }
+        ColorDetector colordetector(100, 100, 150,       /// color
+                                        100);       /// thresholddd call
+            // cv::Mat image = cv::imread("1.jpg");
+
+        cv::Mat image = frame;
+        cv::resize(image, image, cv::Size(499, 399));
+        cv::Mat result = colordetector(image);
+        
+        cv::imshow("colorDetectoin", result);
+        cv::imshow("coloredImage", image);
+        
+        if(cv::waitKey(5) >= 0){
+            break;
+        }           /// press any key to exit.
+
+    }
+    return 0;   
+}                   /// end main...!
